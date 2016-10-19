@@ -53,3 +53,10 @@ plot <- ggplot() +
         panel.grid.minor=element_blank())
 
 print(plot)
+
+ggplot(as.data.frame(table(d)), aes(x = factor(d), y = Freq, fill=Freq)) +
+    geom_bar(width = 1,stat="identity", alpha=.7) + coord_polar(start=-pi/10) +
+    geom_hline(yintercept=1000, colour="white", size=1) +
+    theme_bw() + 
+    theme(panel.background=element_rect(fill="#333333"), panel.grid.major.x=element_blank(), axis.text.x=element_blank()) + 
+    geom_text(aes(label=d, y = 830), alpha = 1, size=6, colour="white")
