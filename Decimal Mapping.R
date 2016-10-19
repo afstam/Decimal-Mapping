@@ -25,9 +25,13 @@ n <- 0.5*pi
 # Initialize empty dataframe
 coord <- data.frame(id = c(1), x = c(0), y = c(0))
 # Iteratively fill the dataframe with coordinates
-for(i in 2:digits) {
-  coord[i,] <- c(i, coord[i-1,2] + cos(d[i]*m+n), coord[i-1,3] + sin(d[i]*m+n))
+for(i in 1:min(length(d),digits)) {
+  coord[i+1,] <- c(i, coord[i,2] + cos(d[i]*m+n), coord[i,3] + sin(d[i]*m+n))
 }
+
+dim <- max(c(abs(max(coord$x) - min(coord$x)),abs(max(coord$y) - min(coord$y))))
+xdim <- c(min(coord$x), min(coord$x) + dim)
+ydim <- c(max(coord$y) - dim, max(coord$y))
 
 # Draw plot
 plot <- ggplot() + 
@@ -36,6 +40,7 @@ plot <- ggplot() +
   geom_point(data = coord[1,], aes(x=x, y=y), colour="#0000FF", shape=16, size=5) +
   geom_point(data = coord[1,], aes(x=x, y=y), colour="#FFFFFF", shape=16, size=3) +
   scale_colour_continuous(low="#FFFFFF", high="#00FFFF") +
+  xlim(xdim) + ylim(ydim) +
   theme(legend.position="none",
         axis.line=element_blank(),
         axis.text.x=element_blank(),
