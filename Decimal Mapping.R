@@ -31,7 +31,10 @@ for(i in 1:min(length(d),digits)) {
 }
 
 # Draw plot
+colfunc <- colorRampPalette(c("white","plum2","purple4"))
+colfunc <- colorRampPalette(c("white","lightgreen","darkgreen"))
 colfunc <- colorRampPalette(c("white","orange","red"))
+colfunc <- colorRampPalette(c("white","turquoise1","steelblue4"))
 
 plot <- ggplot() + 
   geom_path(data = coord, aes(x=x, y=y, colour=id), size=1) +
