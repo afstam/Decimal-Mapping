@@ -34,10 +34,10 @@ for(i in 1:min(length(d),digits)) {
 colfunc <- colorRampPalette(c("white","orange","red"))
 
 plot <- ggplot() + 
-  geom_path(data = coord, aes(x=x, y=y, colour=id), size=0.5) +
-  geom_point(data = coord, aes(x=x, y=y, colour=id), shape=18, size=1) +
-  geom_point(data = coord[1,], aes(x=x, y=y), colour="#0000FF", shape=16, size=5) +
-  geom_point(data = coord[1,], aes(x=x, y=y), colour="#FFFFFF", shape=16, size=3) +
+  geom_path(data = coord, aes(x=x, y=y, colour=id), size=1) +
+  geom_point(data = coord, aes(x=x, y=y, colour=id), shape=18, size=2) +
+  geom_point(data = coord[1,], aes(x=x, y=y), colour="steelblue4", shape=16, size=6) +
+  geom_point(data = coord[1,], aes(x=x, y=y), colour="white", shape=16, size=4) +
   scale_colour_gradientn(colours=colfunc(nrow(coord)))+
   coord_fixed(ratio = 1) +
   theme(legend.position="none",
