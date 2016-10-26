@@ -1,4 +1,5 @@
 library(ggplot2)
+library(RColorBrewer)
 
 # Select number of digits to plot
 digits <- 10000
@@ -30,12 +31,14 @@ for(i in 1:min(length(d),digits)) {
 }
 
 # Draw plot
+colfunc <- colorRampPalette(c("white","orange","red"))
+
 plot <- ggplot() + 
   geom_path(data = coord, aes(x=x, y=y, colour=id), size=0.5) +
   geom_point(data = coord, aes(x=x, y=y, colour=id), shape=18, size=1) +
   geom_point(data = coord[1,], aes(x=x, y=y), colour="#0000FF", shape=16, size=5) +
   geom_point(data = coord[1,], aes(x=x, y=y), colour="#FFFFFF", shape=16, size=3) +
-  scale_colour_continuous(low="#FFFFFF", high="#00FFFF") +
+  scale_colour_gradientn(colours=colfunc(nrow(coord)))+
   coord_fixed(ratio = 1) +
   theme(legend.position="none",
         axis.line=element_blank(),
