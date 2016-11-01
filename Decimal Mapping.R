@@ -31,16 +31,16 @@ for(i in 1:min(length(d),digits)) {
 }
 
 # Draw plot
-colfunc <- colorRampPalette(c("white","plum2","purple4"))
-colfunc <- colorRampPalette(c("white","lightgreen","darkgreen"))
-colfunc <- colorRampPalette(c("white","orange","red"))
-colfunc <- colorRampPalette(c("white","turquoise1","steelblue4"))
+colfunc <- colorRampPalette(c("white","lightgreen","darkgreen"))     #phi
+colfunc <- colorRampPalette(c("white","orange","red"))               #pi
+colfunc <- colorRampPalette(c("white","plum2","purple4"))            #e
+colfunc <- colorRampPalette(c("white","turquoise1","steelblue4"))    #ii
 
 plot <- ggplot() + 
-  geom_path(data = coord, aes(x=x, y=y, colour=id), size=1) +
-  geom_point(data = coord, aes(x=x, y=y, colour=id), shape=18, size=2) +
-  geom_point(data = coord[1,], aes(x=x, y=y), colour="steelblue4", shape=16, size=6) +
-  geom_point(data = coord[1,], aes(x=x, y=y), colour="white", shape=16, size=4) +
+  geom_path(data = coord, aes(x=x, y=y, colour=id), size=2) +
+  geom_point(data = coord, aes(x=x, y=y, colour=id), shape=18, size=7) +
+  geom_point(data = coord[1,], aes(x=x, y=y), colour="steelblue4", shape=16, size=15) +
+  geom_point(data = coord[1,], aes(x=x, y=y), colour="white", shape=16, size=10) +
   scale_colour_gradientn(colours=colfunc(nrow(coord)))+
   coord_fixed(ratio = 1) +
   theme(legend.position="none",
