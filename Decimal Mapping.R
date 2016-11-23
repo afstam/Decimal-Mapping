@@ -3,7 +3,7 @@ library(RColorBrewer)
 
 setwd()
 
-digitplot <- function(sourcefile, light, mid, dark) {
+digitplot <- function(sourcefile, light, dark) {
   # Select number of digits to plot
   digits <- 10000
   # Read the digits from the filename given
@@ -30,7 +30,7 @@ digitplot <- function(sourcefile, light, mid, dark) {
   coord$x <- coord$x - min(coord$x)
   coord$y <- coord$y - min(coord$y)
   # Initialize colours
-  colfunc <- colorRampPalette(c(light, mid, dark))
+  colfunc <- colorRampPalette(c(light, dark))
   # Create the plot
   plot <- ggplot() + 
     geom_path(data = coord, aes(x=x, y=y, colour=id), size=0.15) + #Path
@@ -54,10 +54,12 @@ digitplot <- function(sourcefile, light, mid, dark) {
   return(plot)
 }
 
-phiplot <- digitplot("Phi 10000.csv","white","lightgreen","darkgreen")
-piplot <- digitplot("Pi 10000.csv","white","orange","red")
+phiplot <- digitplot("Phi 10000.csv","#FFEEEE","firebrick4") #FBF3C6
+piplot <- digitplot("Pi 10000.csv","#D2F0FF","#005F8C")
 eplot <- digitplot("e 10000.csv","white","plum2","purple4")
-iiplot <- digitplot("ii 10000.csv","white","turquoise1","steelblue4")
+iiplot <- digitplot("ii 10000.csv","#D5FBFF","#0094A8")
+sqrtplot <- digitplot("sqrt2 10000.csv","#FFFFDD","orange2")
+lnplot <- digitplot("ln2 10000.csv","#F0FFD2","#5F8C00")
 
 ggplot(as.data.frame(table(d)), aes(x = factor(d), y = Freq, fill=Freq)) +
     geom_bar(width = 1,stat="identity", alpha=.7) + coord_polar(start=-pi/10) +
