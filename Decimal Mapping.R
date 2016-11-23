@@ -15,6 +15,7 @@ digitplot <- function(sourcefile, light, mid, dark) {
   c <- b[[1]][b[[1]] != " "]
   # Do not select the first two characters, those come before the decimal dot
   d <- as.numeric(c[3:(digits+2)])
+  d <- d[!is.na(d)]
   # Transformation constant by which the digit is multiplied
   m <- pi/180*36*-1
   # Transformation constant which rotates the graph
@@ -25,16 +26,20 @@ digitplot <- function(sourcefile, light, mid, dark) {
   for(i in 1:min(length(d),digits)) {
     coord[i+1,] <- c(i, coord[i,2] + cos(d[i]*m+n), coord[i,3] + sin(d[i]*m+n))
   }
+  # Determine drawing sizes
+  coord$x <- coord$x - min(coord$x)
+  coord$y <- coord$y - min(coord$y)
   # Initialize colours
   colfunc <- colorRampPalette(c(light, mid, dark))
   # Create the plot
   plot <- ggplot() + 
-    geom_path(data = coord, aes(x=x, y=y, colour=id), size=6) + #Path
-    geom_point(data = coord, aes(x=x, y=y, colour=id), shape=18, size=21) + #Dots
-    geom_point(data = coord[1,], aes(x=x, y=y), colour=dark, shape=16, size=60) + #Coloured ring of starting circle
-    geom_point(data = coord[1,], aes(x=x, y=y), colour="white", shape=16, size=40) + #White center of starting circle
-    scale_colour_gradientn(colours=colfunc(nrow(coord)))+ #Map the gradient colours
-    coord_fixed(ratio = 1) + #Equal scale of x and y axes
+    geom_path(data = coord, aes(x=x, y=y, colour=id), size=0.15) + #Path
+    geom_point(data = coord, aes(x=x, y=y, colour=id), shape=18, size=0.5) + #Dots
+    geom_point(data = coord[1,], aes(x=x, y=y), colour=dark, shape=16, size=4) + #Coloured ring of starting circle
+    geom_point(data = coord[1,], aes(x=x, y=y), colour="white", shape=16, size=2.25) + #White center of starting circle
+    scale_colour_gradientn(colours=colfunc(nrow(coord))) + #Map the gradient colours
+    xlim(c(0,185)) + ylim(c(0,185)) + #Set graph area
+    coord_fixed(ratio=1) + #Equal scale of x and y axes
     theme(legend.position="none", #Disable every part of the graph window
           axis.line=element_blank(),
           axis.text.x=element_blank(),
