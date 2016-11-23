@@ -1,60 +1,58 @@
 library(ggplot2)
 library(RColorBrewer)
 
-# Select number of digits to plot
-digits <- 10000
+setwd()
 
-# Choose one of the source files containing the digits
-a <- read.csv("Phi 10000.csv", header=F)
-a <- read.csv("Pi 10000.csv", header=F)
-a <- read.csv("e 10000.csv", header=F)
-a <- read.csv("ii 10000.csv", header=F)
-
-# It reads the csv as a dataframe, so we select the first records only as a character string
-# strsplit() splits it into individual characters
-b <- strsplit(as.character(a[1,1]),NULL)
-# We select all characters except the whitespaces
-c <- b[[1]][b[[1]] != " "]
-# Do not select the first two characters, those come before the decimal dot
-d <- as.numeric(c[3:(digits+2)])
-
-# Transformation constant by which the digit is multiplied
-m <- pi/180*36*-1
-# Transformation constant which rotates the graph
-n <- 0.5*pi
-
-# Initialize empty dataframe
-coord <- data.frame(id = c(1), x = c(0), y = c(0))
-# Iteratively fill the dataframe with coordinates
-for(i in 1:min(length(d),digits)) {
-  coord[i+1,] <- c(i, coord[i,2] + cos(d[i]*m+n), coord[i,3] + sin(d[i]*m+n))
+digitplot <- function(sourcefile, light, mid, dark) {
+  # Select number of digits to plot
+  digits <- 10000
+  # Read the digits from the filename given
+  a <- read.csv(sourcefile, header=F)
+  # The csv is parsed as a dataframe, so we select the first records only as a character string
+  # strsplit() splits it into individual characters
+  b <- strsplit(as.character(a[1,1]),NULL)
+  # We select all characters except the whitespaces
+  c <- b[[1]][b[[1]] != " "]
+  # Do not select the first two characters, those come before the decimal dot
+  d <- as.numeric(c[3:(digits+2)])
+  # Transformation constant by which the digit is multiplied
+  m <- pi/180*36*-1
+  # Transformation constant which rotates the graph
+  n <- 0.5*pi
+  # Initialize empty dataframe
+  coord <- data.frame(id = c(1), x = c(0), y = c(0))
+  # Iteratively fill the dataframe with coordinates
+  for(i in 1:min(length(d),digits)) {
+    coord[i+1,] <- c(i, coord[i,2] + cos(d[i]*m+n), coord[i,3] + sin(d[i]*m+n))
+  }
+  # Initialize colours
+  colfunc <- colorRampPalette(c(light, mid, dark))
+  # Create the plot
+  plot <- ggplot() + 
+    geom_path(data = coord, aes(x=x, y=y, colour=id), size=6) + #Path
+    geom_point(data = coord, aes(x=x, y=y, colour=id), shape=18, size=21) + #Dots
+    geom_point(data = coord[1,], aes(x=x, y=y), colour=dark, shape=16, size=60) + #Coloured ring of starting circle
+    geom_point(data = coord[1,], aes(x=x, y=y), colour="white", shape=16, size=40) + #White center of starting circle
+    scale_colour_gradientn(colours=colfunc(nrow(coord)))+ #Map the gradient colours
+    coord_fixed(ratio = 1) + #Equal scale of x and y axes
+    theme(legend.position="none", #Disable every part of the graph window
+          axis.line=element_blank(),
+          axis.text.x=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),
+          panel.background=element_rect(fill="black"), #Set the background to black
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank())
+  #Return the plot
+  return(plot)
 }
 
-# Draw plot
-colfunc <- colorRampPalette(c("white","lightgreen","darkgreen"))     #phi
-colfunc <- colorRampPalette(c("white","orange","red"))               #pi
-colfunc <- colorRampPalette(c("white","plum2","purple4"))            #e
-colfunc <- colorRampPalette(c("white","turquoise1","steelblue4"))    #ii
-
-plot <- ggplot() + 
-  geom_path(data = coord, aes(x=x, y=y, colour=id), size=2) +
-  geom_point(data = coord, aes(x=x, y=y, colour=id), shape=18, size=7) +
-  geom_point(data = coord[1,], aes(x=x, y=y), colour="steelblue4", shape=16, size=15) +
-  geom_point(data = coord[1,], aes(x=x, y=y), colour="white", shape=16, size=10) +
-  scale_colour_gradientn(colours=colfunc(nrow(coord)))+
-  coord_fixed(ratio = 1) +
-  theme(legend.position="none",
-        axis.line=element_blank(),
-        axis.text.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks=element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_blank(),
-        panel.background=element_rect(fill="black"),
-        panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank())
-
-print(plot)
+phiplot <- digitplot("Phi 10000.csv","white","lightgreen","darkgreen")
+piplot <- digitplot("Pi 10000.csv","white","orange","red")
+eplot <- digitplot("e 10000.csv","white","plum2","purple4")
+iiplot <- digitplot("ii 10000.csv","white","turquoise1","steelblue4")
 
 ggplot(as.data.frame(table(d)), aes(x = factor(d), y = Freq, fill=Freq)) +
     geom_bar(width = 1,stat="identity", alpha=.7) + coord_polar(start=-pi/10) +
